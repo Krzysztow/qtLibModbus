@@ -2,8 +2,6 @@
 
 #include "mbconnection.h"
 
-//MBThreadedConnManager *MBThreadedConnManager::_instance = 0;
-
 class MBCommand {
 public:
     enum CommandType {
@@ -344,12 +342,10 @@ MBThreadedConnManager::MBThreadedConnManager(QObject *parent) :
     connect(&_managedThread, SIGNAL(started()), this, SLOT(_runModbusAsync()));
 }
 
-//MBThreadedConnManager *MBThreadedConnManager::instance()
-//{
-//    if (0 == _instance)
-//        _instance = new MBThreadedConnManager();
-//    return _instance;
-//}
+const QThread *MBThreadedConnManager::managedThread()
+{
+    return &_managedThread;
+}
 
 void MBThreadedConnManager::registerConnection(MBConnection *conn)
 {

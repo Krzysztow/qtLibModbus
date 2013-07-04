@@ -18,7 +18,6 @@ class QTLIBMOBUSSHARED_EXPORT MBConnection:
 public:
     ~MBConnection();
 
-    static MBConnection *newTcpConnection(const QHostAddress &servIp, quint16 port, MBThreadedConnManager *threadedConnManager = 0);
 
     enum Parity {
         ParityNone,
@@ -26,13 +25,20 @@ public:
         ParityOdd
     };
 
-    static MBConnection *newRtuConnection(const QString &device, int baudRate, Parity parity, int dataBitsNo, int stopBitsNo, MBThreadedConnManager *threadedConnManager = 0);
-
     enum ErrorRecovery {
         ERNone,
         ERLink,
         ERProtocol
     };
+
+    /**
+     * Following are creation methods for two connection types TCP and Rtu.
+     * If you want to run connections in a separate thread, to use nonblocking behaviour, pass not NULL threadedConnManager pointer
+     * and then use set of *Async(...) methods.
+     */
+    static MBConnection *newTcpConnection(const QHostAddress &servIp, quint16 port, MBThreadedConnManager *threadedConnManager = 0);
+    static MBConnection *newRtuConnection(const QString &device, int baudRate, Parity parity, int dataBitsNo, int stopBitsNo, MBThreadedConnManager *threadedConnManager = 0);
+
 
     /**
      * Following set of methods is intended for connections that were created with runInThread set true.
@@ -177,65 +183,87 @@ public:
             return -1;
     }
 
+    /**
+     * Following set of methods is just a wrapper around libmobdus.
+     * These methods are to be invoked on objects that were created without threadManager.
+     * If you want to use connection that was meant to be run in a separate thread (created with threadManager),
+     * use *Async() methods set.
+     */
+
 public:
     int setSlave(int slave) {
+        Q_ASSERT((0 == _threadMgr) ? true : (QThread::currentThread() == _threadMgr->managedThread()));
         return modbus_set_slave(_ctxt, slave);
     }
 
     int mbConnect() {
+        Q_ASSERT((0 == _threadMgr) ? true : (QThread::currentThread() == _threadMgr->managedThread()));
         return modbus_connect(_ctxt);
     }
 
     void close() {
+        Q_ASSERT((0 == _threadMgr) ? true : (QThread::currentThread() == _threadMgr->managedThread()));
         modbus_close(_ctxt);
     }
 
     int readBits(int addr, int nb, QVector<quint8> *result) {
+        Q_ASSERT((0 == _threadMgr) ? true : (QThread::currentThread() == _threadMgr->managedThread()));
         return modbus_read_bits(_ctxt, addr, nb, result->data());
     }
 
     int readInputBits(int addr, int nb, QVector<quint8> *result) {
+        Q_ASSERT((0 == _threadMgr) ? true : (QThread::currentThread() == _threadMgr->managedThread()));
         return modbus_read_input_bits(_ctxt, addr, nb, result->data());
     }
 
     int readRegisters(int addr, int nb, QVector<quint16> *result) {
+        Q_ASSERT((0 == _threadMgr) ? true : (QThread::currentThread() == _threadMgr->managedThread()));
         return modbus_read_registers(_ctxt, addr, nb, result->data());
     }
 
     int readInputRegisters(int addr, int nb, QVector<quint16> *result) {
+        Q_ASSERT((0 == _threadMgr) ? true : (QThread::currentThread() == _threadMgr->managedThread()));
         return modbus_read_input_registers(_ctxt, addr, nb, result->data());
     }
 
     int writeBit(int coilAddr, int status) {
+        Q_ASSERT((0 == _threadMgr) ? true : (QThread::currentThread() == _threadMgr->managedThread()));
         return modbus_write_bit(_ctxt, coilAddr, status);
     }
 
     int writeRegister(int regAddr, int value) {
+        Q_ASSERT((0 == _threadMgr) ? true : (QThread::currentThread() == _threadMgr->managedThread()));
         return modbus_write_register(_ctxt, regAddr, value);
     }
 
     int writeBits(int addr, int nb, QVector<quint8> *data) {
+        Q_ASSERT((0 == _threadMgr) ? true : (QThread::currentThread() == _threadMgr->managedThread()));
         return modbus_write_bits(_ctxt, addr, nb, data->data());
     }
 
     int writeRegisters(int addr, int nb, QVector<quint16> *data) {
+        Q_ASSERT((0 == _threadMgr) ? true : (QThread::currentThread() == _threadMgr->managedThread()));
         return modbus_write_registers(_ctxt, addr, nb, data->data());
     }
 
     int reportSlaveId(QVector<quint8> *dest) {
+        Q_ASSERT((0 == _threadMgr) ? true : (QThread::currentThread() == _threadMgr->managedThread()));
         return modbus_report_slave_id(_ctxt, dest->data());
     }
 
     int sendRawRequest(QVector<quint8> *req) {
+        Q_ASSERT((0 == _threadMgr) ? true : (QThread::currentThread() == _threadMgr->managedThread()));
         return modbus_send_raw_request(_ctxt, req->data(), req->size());
     }
 
     int waitForConfirmation(QVector<quint8> *resp) {
+        Q_ASSERT((0 == _threadMgr) ? true : (QThread::currentThread() == _threadMgr->managedThread()));
         return modbus_receive_confirmation(_ctxt, resp->data());
     }
 
     int writeAndReadRegisters(int writeAddr, int writeNb, QVector<quint16> *wData,
                               int readAddr, int readNb, QVector<quint16> *rData) {
+        Q_ASSERT((0 == _threadMgr) ? true : (QThread::currentThread() == _threadMgr->managedThread()));
         return modbus_write_and_read_registers(_ctxt, writeAddr, writeNb, wData->data(),
                                                readAddr, readNb, rData->data());
     }

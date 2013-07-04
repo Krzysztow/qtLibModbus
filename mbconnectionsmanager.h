@@ -15,6 +15,7 @@ class MBThreadedConnManager : public QObject
 
 public:
     explicit MBThreadedConnManager(QObject *parent = 0);
+    const QThread *managedThread();
 
 public:
     void registerConnection(MBConnection *conn);
