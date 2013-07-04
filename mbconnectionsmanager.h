@@ -39,6 +39,8 @@ public:
     void sendRawRequestAsync(MBConnection *conn, int slaveId, QVector<quint8> *req, int invokeId);
     void waitForConfirmationAsync(MBConnection *conn, int slaveId, QVector<quint8> *resp, int invokeId);
 
+    bool cancelRequest(MBConnection *conn, int invokeId);
+
 signals:
     void commandAdded();
 

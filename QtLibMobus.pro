@@ -17,7 +17,7 @@ SOURCES += \
     mbconnectionsmanager.cpp
 
 HEADERS +=\
-        QtLibMobus_global.h \
+        qtlibmodbus_global.h \
     mbconnection.h \
     mbconnectionsmanager.h
 

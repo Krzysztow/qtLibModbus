@@ -1,7 +1,7 @@
 #ifndef MBCONNECTION_H
 #define MBCONNECTION_H
 
-#include "QtLibMobus_global.h"
+#include "qtlibmodbus_global.h"
 
 #include <QHostAddress>
 
@@ -189,7 +189,6 @@ public:
      * If you want to use connection that was meant to be run in a separate thread (created with threadManager),
      * use *Async() methods set.
      */
-
 public:
     int setSlave(int slave) {
         Q_ASSERT((0 == _threadMgr) ? true : (QThread::currentThread() == _threadMgr->managedThread()));
@@ -344,85 +343,98 @@ public:
         return modbus_strerror(errnum);
     }
 
+public:
+    bool cancelRequest(int invokeId) {
+        if (0 != _threadMgr) {
+            return _threadMgr->cancelRequest(this, invokeId);
+        }
+        else
+            return false;
+    }
+
 signals:
-    void bitsRead(int invokeId, int res, int addr, int nb, QVector<quint8> *result);
-    void inputBitsRead(int invokeId, int res, int addr, int nb, QVector<quint8> *result);
+    void bitsRead(int invokeId, int res);
+    void inputBitsRead(int invokeId, int res);
 
-    void registersRead(int invokeId, int res, int addr, int nb, QVector<quint16> *result);
-    void inputRegistersRead(int invokeId, int res, int addr, int nb, QVector<quint16> *result);
+    void registersRead(int invokeId, int res);
+    void inputRegistersRead(int invokeId, int res);
 
-    void bitWritten(int invokeId, int res, int coilAddr, int status);
-    void registerWritten(int invokeId, int res, int regAddr, int value);
+    void bitWritten(int invokeId, int res);
+    void registerWritten(int invokeId, int res);
 
-    void bitsWritten(int invokeId, int res, int addr, int nb, QVector<quint8> *data);
-    void registersWritten(int invokeId, int res, int addr, int nb, QVector<quint16> *data);
-    void registersWrittenAndRead(int invokeId, int res, int writeAddr, int writeNb, QVector<quint16> *wData,
-                                 int readAddr, int readNb, QVector<quint16> *rData);
+    void bitsWritten(int invokeId, int res);
+    void registersWritten(int invokeId, int res);
+    void registersWrittenAndRead(int invokeId, int res);
 
-    void slaveIdReported(int invokeId, int res, QVector<quint8> *data);
-    void rawRequestSent(int invokeId, int res, QVector<quint8> *req);
-    void confirmationReceived(int invokeId, int res, QVector<quint8> *data);
+    void slaveIdReported(int invokeId, int res);
+    void rawRequestSent(int invokeId, int res);
+    void confirmationReceived(int invokeId, int res);
 
     void connectionChanged(int invokeId, bool isConnected);
-    void errorOccured(int invokeId, int sth);
+    void errorOccured(int invokeId, int errNo);
+    void requestCancelled(int invokeId);
 
 public:
-    inline void emitBitsRead(int invokeId, int res, int addr, int nb, QVector<quint8> *result) {
-        emit bitsRead(invokeId, res, addr, nb, result);
+    inline void emitBitsRead(int invokeId, int res) {
+        emit bitsRead(invokeId, res);
     }
 
-    inline void emitInputBitsRead(int invokeId, int res, int addr, int nb, QVector<quint8> *result) {
-        emit inputBitsRead(invokeId, res, addr, nb, result);
+    inline void emitInputBitsRead(int invokeId, int res) {
+        emit inputBitsRead(invokeId, res);
     }
 
-    inline void emitRegistersRead(int invokeId, int res, int addr, int nb, QVector<quint16> *result) {
-        emit registersRead(invokeId, res, addr, nb, result);
+    inline void emitRegistersRead(int invokeId, int res) {
+        emit registersRead(invokeId, res);
     }
 
-    inline void emitInputRegistersRead(int invokeId, int res, int addr, int nb, QVector<quint16> *result) {
-        emit inputRegistersRead(invokeId, res, addr, nb, result);
+    inline void emitInputRegistersRead(int invokeId, int res) {
+        emit inputRegistersRead(invokeId, res);
     }
 
-    inline void emitBitWritten(int invokeId, int res, int coilAddr, int status) {
-        emit bitWritten(invokeId, res, coilAddr, status);
+    inline void emitBitWritten(int invokeId, int res) {
+        emit bitWritten(invokeId, res);
     }
 
-    inline void emitRegisterWritten(int invokeId, int res, int regAddr, int value) {
-        emit registerWritten(invokeId, res, regAddr, value);
+    inline void emitRegisterWritten(int invokeId, int res) {
+        emit registerWritten(invokeId, res);
     }
 
-    inline void emitBitsWritten(int invokeId, int res, int addr, int nb, QVector<quint8> *data) {
-        emit bitsWritten(invokeId, res, addr, nb, data);
+    inline void emitBitsWritten(int invokeId, int res) {
+        emit bitsWritten(invokeId, res);
     }
 
-    inline void emitRegistersWritten(int invokeId, int res, int addr, int nb, QVector<quint16> *data) {
-        emit registersWritten(invokeId, res, addr, nb, data);
+    inline void emitRegistersWritten(int invokeId, int res) {
+        emit registersWritten(invokeId, res);
     }
 
-    inline void emitRegistersWrittenAndRead(int invokeId, int res, int writeAddr, int writeNb, QVector<quint16> *wData,
-                                            int readAddr, int readNb, QVector<quint16> *rData) {
-        emit registersWrittenAndRead(invokeId, res, writeAddr, writeNb, wData, readAddr, readNb, rData);
+    inline void emitRegistersWrittenAndRead(int invokeId, int res) {
+        emit registersWrittenAndRead(invokeId, res);
     }
 
-    inline void emitSlaveIdReported(int invokeId, int res, QVector<quint8> *data) {
-        emit slaveIdReported(invokeId, res, data);
+    inline void emitSlaveIdReported(int invokeId, int res) {
+        emit slaveIdReported(invokeId, res);
     }
 
-    inline void emitRawRequestSent(int invokeId, int res, QVector<quint8> *req) {
-        emit rawRequestSent(invokeId, res, req);
+    inline void emitRawRequestSent(int invokeId, int res) {
+        emit rawRequestSent(invokeId, res);
     }
 
-    inline void emitConfirmationReceived(int invokeId, int res, QVector<quint8> *data) {
-        emit confirmationReceived(invokeId, res, data);
+    inline void emitConfirmationReceived(int invokeId, int res) {
+        emit confirmationReceived(invokeId, res);
     }
 
     inline void emitConnectionChanged(int invokeId, bool isConnected) {
         emit connectionChanged(invokeId, isConnected);
     }
 
-    inline void emitErrorOccured(int invokeId, int sth) {
-        emit errorOccured(invokeId, sth);
+    inline void emitErrorOccured(int invokeId, int errNo) {
+        emit errorOccured(invokeId, errNo);
     }
+
+    inline void emitRequestCancelled(int invokeId) {
+        emit requestCancelled(invokeId);
+    }
+
 
 private:
     MBConnection(modbus_t *ctxt, MBThreadedConnManager *threadMgr);

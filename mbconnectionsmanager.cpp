@@ -24,7 +24,7 @@ public:
         WaitForConfirmation
     };
 
-    MBCommand(MBConnection *conn, CommandType type, quint32 invokeId):
+    MBCommand(MBConnection *conn, CommandType type, int invokeId):
         _conn(conn),
         _type(type),
         _invokeId(invokeId)
@@ -35,13 +35,13 @@ public:
 
     MBConnection *_conn;
     CommandType _type;
-    quint32 _invokeId;
+    int _invokeId;
 };
 
 class MBConnectCommand:
         public MBCommand {
 public:
-    MBConnectCommand(MBConnection *conn, quint32 invokeId):
+    MBConnectCommand(MBConnection *conn, int invokeId):
         MBCommand(conn, MBCommand::Connect, invokeId)
     {}
 
@@ -57,7 +57,7 @@ public:
 class MBCloseCommand:
         public MBCommand {
 public:
-    MBCloseCommand(MBConnection *conn, quint32 invokeId):
+    MBCloseCommand(MBConnection *conn, int invokeId):
         MBCommand(conn, MBCommand::Close, invokeId)
     {}
 
@@ -71,7 +71,7 @@ public:
 class MBReadBitsCommand:
         public MBCommand {
 public:
-    MBReadBitsCommand(MBConnection *conn, int slaveId, int addr, int nb, QVector<quint8> *result, quint32 invokeId):
+    MBReadBitsCommand(MBConnection *conn, int slaveId, int addr, int nb, QVector<quint8> *result, int invokeId):
         MBCommand(conn, MBCommand::ReadBits, invokeId),
         _slaveId(slaveId),
         _addr(addr),
@@ -84,7 +84,7 @@ public:
         if (ret < 0)
             emit _conn->emitErrorOccured(_invokeId, errno);
         else
-            emit _conn->emitBitsRead(_invokeId, ret, _addr, _nb, _result);
+            emit _conn->emitBitsRead(_invokeId, ret);
     }
 
     int _slaveId;
@@ -96,7 +96,7 @@ public:
 class MBReadInputBitsCommand:
         public MBCommand {
 public:
-    MBReadInputBitsCommand(MBConnection *conn, int slaveId, int addr, int nb, QVector<quint8> *result, quint32 invokeId):
+    MBReadInputBitsCommand(MBConnection *conn, int slaveId, int addr, int nb, QVector<quint8> *result, int invokeId):
         MBCommand(conn, MBCommand::ReadInputBits, invokeId),
         _slaveId(slaveId),
         _addr(addr),
@@ -109,7 +109,7 @@ public:
         if (res < 0)
             emit _conn->emitErrorOccured(_invokeId, errno);
         else
-            emit _conn->emitInputBitsRead(_invokeId, res, _addr, _nb, _result);
+            emit _conn->emitInputBitsRead(_invokeId, res);
     }
 
     int _slaveId;
@@ -121,7 +121,7 @@ public:
 class MBReadRegistersCommand:
         public MBCommand {
 public:
-    MBReadRegistersCommand(MBConnection *conn, int slaveId, int addr, int nb, QVector<quint16> *result, quint32 invokeId):
+    MBReadRegistersCommand(MBConnection *conn, int slaveId, int addr, int nb, QVector<quint16> *result, int invokeId):
         MBCommand(conn, MBCommand::ReadRegisters, invokeId),
         _slaveId(slaveId),
         _addr(addr),
@@ -134,7 +134,7 @@ public:
         if (res < 0)
             emit _conn->emitErrorOccured(_invokeId, errno);
         else
-            emit _conn->emitRegistersRead(_invokeId, res, _addr, _nb, _result);
+            emit _conn->emitRegistersRead(_invokeId, res);
     }
 
     int _slaveId;
@@ -146,7 +146,7 @@ public:
 class MBReadInputRegistersCommand:
         public MBCommand {
 public:
-    MBReadInputRegistersCommand(MBConnection *conn, int slaveId, int addr, int nb, QVector<quint16> *result, quint32 invokeId):
+    MBReadInputRegistersCommand(MBConnection *conn, int slaveId, int addr, int nb, QVector<quint16> *result, int invokeId):
         MBCommand(conn, MBCommand::ReadInputRegisters, invokeId),
         _slaveId(slaveId),
         _addr(addr),
@@ -159,7 +159,7 @@ public:
         if (res < 0)
             emit _conn->emitErrorOccured(_invokeId, errno);
         else
-            emit _conn->emitInputRegistersRead(_invokeId, res, _addr, _nb, _result);
+            emit _conn->emitInputRegistersRead(_invokeId, res);
     }
 
     int _slaveId;
@@ -172,7 +172,7 @@ public:
 class MBWriteBitCommand:
         public MBCommand {
 public:
-    MBWriteBitCommand(MBConnection *conn, int slaveId, int coilAddr, int status, quint32 invokeId):
+    MBWriteBitCommand(MBConnection *conn, int slaveId, int coilAddr, int status, int invokeId):
         MBCommand(conn, MBCommand::WriteBit, invokeId),
         _slaveId(slaveId),
         _coilAddr(coilAddr),
@@ -184,7 +184,7 @@ public:
         if (ret < 0)
             emit _conn->emitErrorOccured(_invokeId, errno);
         else
-            emit _conn->emitBitWritten(_invokeId, ret, _coilAddr, _status);
+            emit _conn->emitBitWritten(_invokeId, ret);
     }
 
     int _slaveId;
@@ -195,7 +195,7 @@ public:
 class MBWriteRegisterCommand:
         public MBCommand {
 public:
-    MBWriteRegisterCommand(MBConnection *conn, int slaveId, int regAddr, int value, quint32 invokeId):
+    MBWriteRegisterCommand(MBConnection *conn, int slaveId, int regAddr, int value, int invokeId):
         MBCommand(conn, MBCommand::WriteRegister, invokeId),
         _slaveId(slaveId),
         _regAddr(regAddr),
@@ -207,7 +207,7 @@ public:
         if (res < 0)
             _conn->emitErrorOccured(_invokeId, errno);
         else
-            _conn->emitRegisterWritten(_invokeId, res, _regAddr, _value);
+            _conn->emitRegisterWritten(_invokeId, res);
     }
 
     int _slaveId;
@@ -218,7 +218,7 @@ public:
 class MBWriteBitsCommand:
         public MBCommand {
 public:
-    MBWriteBitsCommand(MBConnection *conn, int slaveId, int addr, int nb, QVector<quint8> *data, quint32 invokeId):
+    MBWriteBitsCommand(MBConnection *conn, int slaveId, int addr, int nb, QVector<quint8> *data, int invokeId):
         MBCommand(conn, MBCommand::WriteBits, invokeId),
         _slaveId(slaveId),
         _addr(addr),
@@ -231,7 +231,7 @@ public:
         if (res < 0)
             _conn->emitErrorOccured(_invokeId, errno);
         else
-            _conn->emitBitsWritten(_invokeId, res, _addr, _nb, _data);
+            _conn->emitBitsWritten(_invokeId, res);
     }
 
     int _slaveId;
@@ -243,7 +243,7 @@ public:
 class MBWriteRegistersCommand:
         public MBCommand {
 public:
-    MBWriteRegistersCommand(MBConnection *conn, int slaveId, int addr, int nb, QVector<quint16> *data, quint32 invokeId):
+    MBWriteRegistersCommand(MBConnection *conn, int slaveId, int addr, int nb, QVector<quint16> *data, int invokeId):
         MBCommand(conn, MBCommand::WriteRegisters, invokeId),
         _slaveId(slaveId),
         _addr(addr),
@@ -256,7 +256,7 @@ public:
         if (res < 0)
             _conn->emitErrorOccured(_invokeId, errno);
         else
-            _conn->emitRegistersWritten(_invokeId, res, _addr, _nb, _data);
+            _conn->emitRegistersWritten(_invokeId, res);
     }
 
     int _slaveId;
@@ -268,7 +268,7 @@ public:
 class MBReportSlaveIdCommand:
         public MBCommand {
 public:
-    MBReportSlaveIdCommand(MBConnection *conn, int slaveId, QVector<quint8> *dest, quint32 invokeId):
+    MBReportSlaveIdCommand(MBConnection *conn, int slaveId, QVector<quint8> *dest, int invokeId):
         MBCommand(conn, MBCommand::ReportSlaveId, invokeId),
         _slaveId(slaveId),
         _dest(dest) {}
@@ -279,7 +279,7 @@ public:
         if (res < 0)
             _conn->emitErrorOccured(_invokeId, errno);
         else
-            _conn->emitSlaveIdReported(_invokeId, res, _dest);
+            _conn->emitSlaveIdReported(_invokeId, res);
     }
 
     int _slaveId;
@@ -289,7 +289,7 @@ public:
 class MBRawRequestCommand:
         public MBCommand {
 public:
-    MBRawRequestCommand(MBConnection *conn, int slaveId, QVector<quint8> *req, quint32 invokeId):
+    MBRawRequestCommand(MBConnection *conn, int slaveId, QVector<quint8> *req, int invokeId):
         MBCommand(conn, MBCommand::SendRawRequest, invokeId),
         _slaveId(slaveId),
         _req(req) {}
@@ -300,7 +300,7 @@ public:
         if (res < 0)
             _conn->emitErrorOccured(_invokeId, errno);
         else
-            _conn->emitRawRequestSent(_invokeId, res, _req);
+            _conn->emitRawRequestSent(_invokeId, res);
     }
 
     int _slaveId;
@@ -310,7 +310,7 @@ public:
 class MBWaitForConfirmationCommand:
         public MBCommand {
 public:
-    MBWaitForConfirmationCommand(MBConnection *conn, int slaveId, QVector<quint8> *resp, quint32 invokeId):
+    MBWaitForConfirmationCommand(MBConnection *conn, int slaveId, QVector<quint8> *resp, int invokeId):
         MBCommand(conn, MBCommand::SendRawRequest, invokeId),
         _slaveId(slaveId),
         _resp(resp) {}
@@ -321,7 +321,7 @@ public:
         if (res < 0)
             _conn->emitErrorOccured(_invokeId, errno);
         else
-            _conn->emitConfirmationReceived(_invokeId, res, _resp);
+            _conn->emitConfirmationReceived(_invokeId, res);
     }
 
     int _slaveId;
@@ -371,10 +371,43 @@ void MBThreadedConnManager::mbConnectAsync(MBConnection *conn, int invokeId)
     _appendCommand(new MBConnectCommand(conn, invokeId));
 }
 
+bool MBThreadedConnManager::cancelRequest(MBConnection *conn, int invokeId)
+{
+    bool isCancelled(false);
+
+    _mutex.lock();
+
+    QList<MBCommand*>::Iterator it = _commands.begin();
+    while (_commands.end() != it) {
+        MBCommand *cmd = *it;
+        if ((invokeId == cmd->_invokeId) &&
+                (conn == cmd->_conn)) {
+            it = _commands.erase(it);
+            qDebug("%s: cancelled %d type (reqIdL %d)", __FUNCTION__, cmd->_type, invokeId);
+            delete cmd;
+            isCancelled = true;
+            //we are done - there should be no more duplications
+            break;
+        }
+        else
+            ++it;
+    }
+
+    _mutex.unlock();
+
+    if (isCancelled) {
+        conn->emitRequestCancelled(invokeId);
+    }
+
+    return isCancelled;
+}
+
 void MBThreadedConnManager::closeAsync(MBConnection *conn, bool prioritize, int invokeId)
 {
     MBCommand *closeCmd = new MBCloseCommand(conn, invokeId);
     if (prioritize) {
+        QList<int> cancelledIds;
+
         _mutex.lock();
         // if we are to give high priority to the close command, first
         // we have to cancell all scheduled commands for this connection
@@ -383,13 +416,18 @@ void MBThreadedConnManager::closeAsync(MBConnection *conn, bool prioritize, int 
             MBCommand* cmd = *it;
             if (conn == cmd->_conn) {
                 it = _commands.erase(it);
-                qDebug("%s: removing %d type", __FUNCTION__, cmd->_type);
+                cancelledIds.append(cmd->_invokeId);
+                qDebug("%s: removing %d type (reqId: %d)", __FUNCTION__, cmd->_type, cmd->_invokeId);
                 delete cmd;
             }
             else
                 ++it;
         }
         _mutex.unlock();
+
+        foreach (int iId, cancelledIds) {
+            conn->emitRequestCancelled(iId);
+        }
 
         _prependCommand(closeCmd);
     }
