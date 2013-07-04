@@ -6,7 +6,7 @@
 #include <QHostAddress>
 
 #include "errno.h"
-#include "modbus.h"
+#include "libmodbus/modbus.h"
 
 #include "mbconnectionsmanager.h"
 
@@ -173,7 +173,7 @@ public:
             return -1;
     }
 
-    int writeRegisters(int slaveId, int addr, int nb, QVector<quint16> *data) {
+    int writeRegistersAsync(int slaveId, int addr, int nb, QVector<quint16> *data) {
         if (0 != _threadMgr) {
             incrementReqId();
             _threadMgr->writeRegistersAsync(this, slaveId, addr, nb, data, _lastRequestId);

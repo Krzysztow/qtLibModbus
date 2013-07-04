@@ -46,7 +46,6 @@ signals:
 
 private slots:
     void _threadFinished();
-    void _runModbusAsync();
 
     void _nextCommandAdded();
 

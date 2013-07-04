@@ -330,7 +330,8 @@ public:
 
 MBThreadedConnManager::MBThreadedConnManager(QObject *parent) :
     QObject(parent),
-    _managedConnectionsCnt(0)
+    _managedConnectionsCnt(0),
+    _currentCommand(0)
 {
     /* this connection is to be queued, since *Async commandAdded is to be emitted
      * from the other thread than the _managedThread, where MBThreadedConnManager works in.
@@ -339,7 +340,6 @@ MBThreadedConnManager::MBThreadedConnManager(QObject *parent) :
 
     moveToThread(&_managedThread);
     connect(&_managedThread, SIGNAL(finished()), this, SLOT(_threadFinished()));
-    connect(&_managedThread, SIGNAL(started()), this, SLOT(_runModbusAsync()));
 }
 
 const QThread *MBThreadedConnManager::managedThread()
