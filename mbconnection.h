@@ -31,6 +31,23 @@ public:
         ERProtocol
     };
 
+    enum RequestType {
+        Connect,
+        Close,
+
+        ReadBits,
+        ReadInputBits,
+        ReadRegisters,
+        ReadInputRegisters,
+
+        WriteBit,
+        WriteBits,
+        WriteRegister,
+        WriteRegisters,
+
+        ReportSlaveId
+    };
+
     /**
      * Following are creation methods for two connection types TCP and Rtu.
      * If you want to run connections in a separate thread, to use nonblocking behaviour, pass not NULL threadedConnManager pointer
@@ -49,7 +66,7 @@ public:
      * When the the given Modbus command is executed, its completion (or error) is broadcasted with emission of apprioriate signal (or @errorOccured()) with the particular invokeId.
      *
      * @note :  Keep in mind, that you are interested in connection of the signals to the slots implemented in your objects. The MBConnection would run in the other thread, thus
-     *          you have to use connection type of Qt::Queuedconnection, not to fall into any race conditions.
+     *          you have to use connection of Qt::Queuedconnection type in order not to fall into any race conditions.
      */
 
 public:
@@ -353,8 +370,8 @@ public:
     }
 
 signals:
-    void bitsRead(int invokeId, int res);
-    void inputBitsRead(int invokeId, int res);
+    //! todo: where to use qRegisterMetaType<MBConnection::RequestType>("MBConnection::RequestType") to do it only once and within library?
+    void requestFinished(int invokeId, int res, /*MBConnection::RequestType*/int type);
 
     void registersRead(int invokeId, int res);
     void inputRegistersRead(int invokeId, int res);
@@ -375,44 +392,8 @@ signals:
     void requestCancelled(int invokeId);
 
 public:
-    inline void emitBitsRead(int invokeId, int res) {
-        emit bitsRead(invokeId, res);
-    }
-
-    inline void emitInputBitsRead(int invokeId, int res) {
-        emit inputBitsRead(invokeId, res);
-    }
-
-    inline void emitRegistersRead(int invokeId, int res) {
-        emit registersRead(invokeId, res);
-    }
-
-    inline void emitInputRegistersRead(int invokeId, int res) {
-        emit inputRegistersRead(invokeId, res);
-    }
-
-    inline void emitBitWritten(int invokeId, int res) {
-        emit bitWritten(invokeId, res);
-    }
-
-    inline void emitRegisterWritten(int invokeId, int res) {
-        emit registerWritten(invokeId, res);
-    }
-
-    inline void emitBitsWritten(int invokeId, int res) {
-        emit bitsWritten(invokeId, res);
-    }
-
-    inline void emitRegistersWritten(int invokeId, int res) {
-        emit registersWritten(invokeId, res);
-    }
-
-    inline void emitRegistersWrittenAndRead(int invokeId, int res) {
-        emit registersWrittenAndRead(invokeId, res);
-    }
-
-    inline void emitSlaveIdReported(int invokeId, int res) {
-        emit slaveIdReported(invokeId, res);
+    inline void emitRequestFinished(int invokeId, int res, MBConnection::RequestType type) {
+        emit requestFinished(invokeId, res, type);
     }
 
     inline void emitRawRequestSent(int invokeId, int res) {
