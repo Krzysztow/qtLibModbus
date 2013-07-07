@@ -7,7 +7,7 @@
 #include <QDebug>
 #define MBDebug() qDebug() << __PRETTY_FUNCTION__  << QThread::currentThread()
 #else
-#define MBDebug() //
+#define MBDebug() ;
 #endif //QT_MODBUS_DEBUG
 
 class MBCommand {
@@ -374,7 +374,7 @@ void MBThreadedConnManager::registerConnection(MBConnection *conn)
     conn->setParent(this);
     if (_managedConnectionsCnt > 0) {
         if (!_managedThread.isRunning()) {
-            MBDebug() << "Starting the thread";
+            qDebug() << "Starting the thread";
             _managedThread.start();
         }
     }
@@ -384,6 +384,7 @@ void MBThreadedConnManager::unregisterConnection(MBConnection *conn)
 {
     --_managedConnectionsCnt;
     if (0 == _managedConnectionsCnt) {
+        qDebug() << "Stopping the thread";
         _managedThread.exit();
     }
     Q_UNUSED(conn);

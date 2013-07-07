@@ -3,7 +3,7 @@
 
 #include <QtCore/qglobal.h>
 
-#if defined(QTLIBMOBUS_LIBRARY)
+#if defined(QTLIBMODBUS_LIBRARY)
 #  define QTLIBMOBUSSHARED_EXPORT Q_DECL_EXPORT
 #else
 #  define QTLIBMOBUSSHARED_EXPORT Q_DECL_IMPORT
