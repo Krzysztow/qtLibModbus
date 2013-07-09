@@ -140,10 +140,30 @@ public:
             return -1;
     }
 
+    int writeBitsAsync(int slaveId, int addr, int nb, QVector<quint8> *data) {
+        if (0 != _threadMgr) {
+            incrementReqId();
+            _threadMgr->writeBitsAsync(this, slaveId, addr, nb, data, _lastRequestId);
+            return _lastRequestId;
+        }
+        else
+            return -1;
+    }
+
     int writeRegisterAsync(int slaveId, int regAddr, int value) {
         if (0 != _threadMgr) {
             incrementReqId();
             _threadMgr->writeRegisterAsync(this, slaveId, regAddr, value, _lastRequestId);
+            return _lastRequestId;
+        }
+        else
+            return -1;
+    }
+
+    int writeRegistersAsync(int slaveId, int addr, int nb, QVector<quint16> *data) {
+        if (0 != _threadMgr) {
+            incrementReqId();
+            _threadMgr->writeRegistersAsync(this, slaveId, addr, nb, data, _lastRequestId);
             return _lastRequestId;
         }
         else
@@ -174,26 +194,6 @@ public:
         if (0 != _threadMgr) {
             incrementReqId();
             _threadMgr->waitForConfirmationAsync(this, slaveId, resp, _lastRequestId);
-            return _lastRequestId;
-        }
-        else
-            return -1;
-    }
-
-    int writeBits(int slaveId, int addr, int nb, QVector<quint8> *data) {
-        if (0 != _threadMgr) {
-            incrementReqId();
-            _threadMgr->writeBitsAsync(this, slaveId, addr, nb, data, _lastRequestId);
-            return _lastRequestId;
-        }
-        else
-            return -1;
-    }
-
-    int writeRegistersAsync(int slaveId, int addr, int nb, QVector<quint16> *data) {
-        if (0 != _threadMgr) {
-            incrementReqId();
-            _threadMgr->writeRegistersAsync(this, slaveId, addr, nb, data, _lastRequestId);
             return _lastRequestId;
         }
         else
@@ -373,17 +373,6 @@ signals:
     //! todo: where to use qRegisterMetaType<MBConnection::RequestType>("MBConnection::RequestType") to do it only once and within library?
     void requestFinished(int invokeId, int res, /*MBConnection::RequestType*/int type);
 
-    void registersRead(int invokeId, int res);
-    void inputRegistersRead(int invokeId, int res);
-
-    void bitWritten(int invokeId, int res);
-    void registerWritten(int invokeId, int res);
-
-    void bitsWritten(int invokeId, int res);
-    void registersWritten(int invokeId, int res);
-    void registersWrittenAndRead(int invokeId, int res);
-
-    void slaveIdReported(int invokeId, int res);
     void rawRequestSent(int invokeId, int res);
     void confirmationReceived(int invokeId, int res);
 
