@@ -57,7 +57,7 @@ public:
         MBDebug();
         int ret = _conn->mbConnect();
         if (ret < 0)
-            _conn->emitErrorOccured(_invokeId, errno);
+            _conn->emitErrorOccured(_invokeId, errno, _type);
         else
             _conn->emitConnectionChanged(_invokeId, 0 == ret);
     }
@@ -93,9 +93,9 @@ public:
         _conn->setSlave(_slaveId);
         int ret = _conn->readBits(_addr, _nb, _result);
         if (ret < 0)
-            _conn->emitErrorOccured(_invokeId, errno);
+            _conn->emitErrorOccured(_invokeId, errno, _type);
         else
-            _conn->emitRequestFinished(_invokeId, ret, MBConnection::ReadBits);
+            _conn->emitRequestFinished(_invokeId, ret, _type);
     }
 
     int _slaveId;
@@ -119,9 +119,9 @@ public:
         _conn->setSlave(_slaveId);
         int res = _conn->readInputBits(_addr, _nb, _result);
         if (res < 0)
-            _conn->emitErrorOccured(_invokeId, errno);
+            _conn->emitErrorOccured(_invokeId, errno, _type);
         else
-            _conn->emitRequestFinished(_invokeId, res, MBConnection::ReadInputBits);
+            _conn->emitRequestFinished(_invokeId, res, _type);
     }
 
     int _slaveId;
@@ -143,11 +143,11 @@ public:
     virtual void exec() {
         MBDebug();
         _conn->setSlave(_slaveId);
-        int res = _conn->readRegisters(_addr, _nb, _result);
+        int res = _conn->readRegisters(_addr, _nb, _result, _type);
         if (res < 0)
             _conn->emitErrorOccured(_invokeId, errno);
         else
-            _conn->emitRequestFinished(_invokeId, res, MBConnection::ReadRegisters);
+            _conn->emitRequestFinished(_invokeId, res, _type);
     }
 
     int _slaveId;
@@ -171,9 +171,9 @@ public:
         _conn->setSlave(_slaveId);
         int res = _conn->readInputRegisters(_addr, _nb, _result);
         if (res < 0)
-            _conn->emitErrorOccured(_invokeId, errno);
+            _conn->emitErrorOccured(_invokeId, errno, _type);
         else
-            _conn->emitRequestFinished(_invokeId, res, MBConnection::ReadInputRegisters);
+            _conn->emitRequestFinished(_invokeId, res, _type);
     }
 
     int _slaveId;
@@ -197,9 +197,9 @@ public:
         _conn->setSlave(_slaveId);
         int ret = _conn->writeBit(_coilAddr, _status);
         if (ret < 0)
-            _conn->emitErrorOccured(_invokeId, errno);
+            _conn->emitErrorOccured(_invokeId, errno, _type);
         else
-            _conn->emitRequestFinished(_invokeId, ret, MBConnection::WriteBit);
+            _conn->emitRequestFinished(_invokeId, ret, _type);
     }
 
     int _slaveId;
@@ -221,9 +221,9 @@ public:
         _conn->setSlave(_slaveId);
         int res = _conn->writeRegister(_regAddr, _value);
         if (res < 0)
-            _conn->emitErrorOccured(_invokeId, errno);
+            _conn->emitErrorOccured(_invokeId, errno, _type);
         else
-            _conn->emitRequestFinished(_invokeId, res, MBConnection::WriteRegister);
+            _conn->emitRequestFinished(_invokeId, res, _type);
     }
 
     int _slaveId;
@@ -246,9 +246,9 @@ public:
         _conn->setSlave(_slaveId);
         int res = _conn->writeBits(_addr, _nb, _data);
         if (res < 0)
-            _conn->emitErrorOccured(_invokeId, errno);
+            _conn->emitErrorOccured(_invokeId, errno, _type);
         else
-            _conn->emitRequestFinished(_invokeId, res, MBConnection::WriteBits);
+            _conn->emitRequestFinished(_invokeId, res, _type);
     }
 
     int _slaveId;
@@ -272,9 +272,9 @@ public:
         _conn->setSlave(_slaveId);
         int res = _conn->writeRegisters(_addr, _nb, _data);
         if (res < 0)
-            _conn->emitErrorOccured(_invokeId, errno);
+            _conn->emitErrorOccured(_invokeId, errno, _type);
         else
-            _conn->emitRequestFinished(_invokeId, res, MBConnection::WriteRegisters);
+            _conn->emitRequestFinished(_invokeId, res, _type);
     }
 
     int _slaveId;
@@ -296,9 +296,9 @@ public:
         _conn->setSlave(_slaveId);
         int res = _conn->reportSlaveId(_dest);
         if (res < 0)
-            _conn->emitErrorOccured(_invokeId, errno);
+            _conn->emitErrorOccured(_invokeId, errno, _type);
         else
-            _conn->emitRequestFinished(_invokeId, res, MBConnection::ReportSlaveId);
+            _conn->emitRequestFinished(_invokeId, res, _type);
     }
 
     int _slaveId;
@@ -318,7 +318,7 @@ public:
         _conn->setSlave(_slaveId);
         int res = _conn->sendRawRequest(_req);
         if (res < 0)
-            _conn->emitErrorOccured(_invokeId, errno);
+            _conn->emitErrorOccured(_invokeId, errno, _type);
         else
             _conn->emitRawRequestSent(_invokeId, res);
     }
@@ -340,7 +340,7 @@ public:
         _conn->setSlave(_slaveId);
         int res = _conn->waitForConfirmation(_resp);
         if (res < 0)
-            _conn->emitErrorOccured(_invokeId, errno);
+            _conn->emitErrorOccured(_invokeId, errno, _type);
         else
             _conn->emitConfirmationReceived(_invokeId, res);
     }

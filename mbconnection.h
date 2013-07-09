@@ -377,7 +377,7 @@ signals:
     void confirmationReceived(int invokeId, int res);
 
     void connectionChanged(int invokeId, bool isConnected);
-    void errorOccured(int invokeId, int errNo);
+    void errorOccured(int invokeId, int errNo, /*MBConnection::RequestType*/int type);
     void requestCancelled(int invokeId);
 
 public:
@@ -397,8 +397,8 @@ public:
         emit connectionChanged(invokeId, isConnected);
     }
 
-    inline void emitErrorOccured(int invokeId, int errNo) {
-        emit errorOccured(invokeId, errNo);
+    inline void emitErrorOccured(int invokeId, int errNo, MBConnection::RequestType type) {
+        emit errorOccured(invokeId, errNo, type);
     }
 
     inline void emitRequestCancelled(int invokeId) {
