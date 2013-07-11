@@ -57,7 +57,7 @@ public:
         MBDebug();
         int ret = _conn->mbConnect();
         if (ret < 0)
-            _conn->emitErrorOccured(_invokeId, errno, _type);
+            _conn->emitErrorOccured(_invokeId, errno, MBConnection::Connect);
         else
             _conn->emitConnectionChanged(_invokeId, 0 == ret);
     }
@@ -81,104 +81,96 @@ public:
 class MBReadBitsCommand:
         public MBCommand {
 public:
-    MBReadBitsCommand(MBConnection *conn, int slaveId, int addr, int nb, QVector<quint8> *result, int invokeId):
+    MBReadBitsCommand(MBConnection *conn, int slaveId, int addr, QVector<quint8> *result, int invokeId):
         MBCommand(conn, MBCommand::ReadBits, invokeId),
         _slaveId(slaveId),
         _addr(addr),
-        _nb(nb),
         _result(result) {}
 
     virtual void exec() {
         MBDebug();
         _conn->setSlave(_slaveId);
-        int ret = _conn->readBits(_addr, _nb, _result);
+        int ret = _conn->readBits(_addr, _result->size(), _result);
         if (ret < 0)
-            _conn->emitErrorOccured(_invokeId, errno, _type);
+            _conn->emitErrorOccured(_invokeId, errno, MBConnection::ReadBits);
         else
-            _conn->emitRequestFinished(_invokeId, ret, _type);
+            _conn->emitRequestFinished(_invokeId, ret, MBConnection::ReadBits);
     }
 
     int _slaveId;
     int _addr;
-    int _nb;
     QVector<quint8> *_result;
 };
 
 class MBReadInputBitsCommand:
         public MBCommand {
 public:
-    MBReadInputBitsCommand(MBConnection *conn, int slaveId, int addr, int nb, QVector<quint8> *result, int invokeId):
+    MBReadInputBitsCommand(MBConnection *conn, int slaveId, int addr, QVector<quint8> *result, int invokeId):
         MBCommand(conn, MBCommand::ReadInputBits, invokeId),
         _slaveId(slaveId),
         _addr(addr),
-        _nb(nb),
         _result(result) {}
 
     virtual void exec() {
         MBDebug();
         _conn->setSlave(_slaveId);
-        int res = _conn->readInputBits(_addr, _nb, _result);
+        int res = _conn->readInputBits(_addr, _result->size(), _result);
         if (res < 0)
-            _conn->emitErrorOccured(_invokeId, errno, _type);
+            _conn->emitErrorOccured(_invokeId, errno, MBConnection::ReadInputBits);
         else
-            _conn->emitRequestFinished(_invokeId, res, _type);
+            _conn->emitRequestFinished(_invokeId, res, MBConnection::ReadInputBits);
     }
 
     int _slaveId;
     int _addr;
-    int _nb;
     QVector<quint8> *_result;
 };
 
 class MBReadRegistersCommand:
         public MBCommand {
 public:
-    MBReadRegistersCommand(MBConnection *conn, int slaveId, int addr, int nb, QVector<quint16> *result, int invokeId):
+    MBReadRegistersCommand(MBConnection *conn, int slaveId, int addr, QVector<quint16> *result, int invokeId):
         MBCommand(conn, MBCommand::ReadRegisters, invokeId),
         _slaveId(slaveId),
         _addr(addr),
-        _nb(nb),
         _result(result) {}
 
     virtual void exec() {
         MBDebug();
         _conn->setSlave(_slaveId);
-        int res = _conn->readRegisters(_addr, _nb, _result, _type);
+        int res = _conn->readRegisters(_addr, _result->size(), _result);
         if (res < 0)
-            _conn->emitErrorOccured(_invokeId, errno);
+            _conn->emitErrorOccured(_invokeId, errno, MBConnection::ReadRegisters);
         else
-            _conn->emitRequestFinished(_invokeId, res, _type);
+            _conn->emitRequestFinished(_invokeId, res, MBConnection::ReadRegisters);
     }
 
     int _slaveId;
     int _addr;
-    int _nb;
     QVector<quint16> *_result;
 };
 
 class MBReadInputRegistersCommand:
         public MBCommand {
 public:
-    MBReadInputRegistersCommand(MBConnection *conn, int slaveId, int addr, int nb, QVector<quint16> *result, int invokeId):
+    MBReadInputRegistersCommand(MBConnection *conn, int slaveId, int addr, QVector<quint16> *result, int invokeId):
         MBCommand(conn, MBCommand::ReadInputRegisters, invokeId),
         _slaveId(slaveId),
         _addr(addr),
-        _nb(nb),
         _result(result) {}
 
     virtual void exec() {
         MBDebug();
         _conn->setSlave(_slaveId);
-        int res = _conn->readInputRegisters(_addr, _nb, _result);
+        int res = _conn->readInputRegisters(_addr, _result->size(), _result);
         if (res < 0)
-            _conn->emitErrorOccured(_invokeId, errno, _type);
+            _conn->emitErrorOccured(_invokeId, errno, MBConnection::ReadInputRegisters);
         else
-            _conn->emitRequestFinished(_invokeId, res, _type);
+            _conn->emitRequestFinished(_invokeId, res, MBConnection::ReadInputRegisters);
     }
 
     int _slaveId;
     int _addr;
-    int _nb;
     QVector<quint16> *_result;
 };
 
@@ -197,9 +189,9 @@ public:
         _conn->setSlave(_slaveId);
         int ret = _conn->writeBit(_coilAddr, _status);
         if (ret < 0)
-            _conn->emitErrorOccured(_invokeId, errno, _type);
+            _conn->emitErrorOccured(_invokeId, errno, MBConnection::WriteBit);
         else
-            _conn->emitRequestFinished(_invokeId, ret, _type);
+            _conn->emitRequestFinished(_invokeId, ret, MBConnection::WriteBit);
     }
 
     int _slaveId;
@@ -221,9 +213,9 @@ public:
         _conn->setSlave(_slaveId);
         int res = _conn->writeRegister(_regAddr, _value);
         if (res < 0)
-            _conn->emitErrorOccured(_invokeId, errno, _type);
+            _conn->emitErrorOccured(_invokeId, errno, MBConnection::WriteRegister);
         else
-            _conn->emitRequestFinished(_invokeId, res, _type);
+            _conn->emitRequestFinished(_invokeId, res, MBConnection::WriteRegister);
     }
 
     int _slaveId;
@@ -234,52 +226,48 @@ public:
 class MBWriteBitsCommand:
         public MBCommand {
 public:
-    MBWriteBitsCommand(MBConnection *conn, int slaveId, int addr, int nb, QVector<quint8> *data, int invokeId):
+    MBWriteBitsCommand(MBConnection *conn, int slaveId, int addr, QVector<quint8> *data, int invokeId):
         MBCommand(conn, MBCommand::WriteBits, invokeId),
         _slaveId(slaveId),
         _addr(addr),
-        _nb(nb),
         _data(data) {}
 
     virtual void exec() {
         MBDebug();
         _conn->setSlave(_slaveId);
-        int res = _conn->writeBits(_addr, _nb, _data);
+        int res = _conn->writeBits(_addr, _data->size(), _data);
         if (res < 0)
-            _conn->emitErrorOccured(_invokeId, errno, _type);
+            _conn->emitErrorOccured(_invokeId, errno, MBConnection::WriteBits);
         else
-            _conn->emitRequestFinished(_invokeId, res, _type);
+            _conn->emitRequestFinished(_invokeId, res, MBConnection::WriteBits);
     }
 
     int _slaveId;
     int _addr;
-    int _nb;
     QVector<quint8> *_data;
 };
 
 class MBWriteRegistersCommand:
         public MBCommand {
 public:
-    MBWriteRegistersCommand(MBConnection *conn, int slaveId, int addr, int nb, QVector<quint16> *data, int invokeId):
+    MBWriteRegistersCommand(MBConnection *conn, int slaveId, int addr, QVector<quint16> *data, int invokeId):
         MBCommand(conn, MBCommand::WriteRegisters, invokeId),
         _slaveId(slaveId),
         _addr(addr),
-        _nb(nb),
         _data(data) {}
 
     virtual void exec() {
         MBDebug();
         _conn->setSlave(_slaveId);
-        int res = _conn->writeRegisters(_addr, _nb, _data);
+        int res = _conn->writeRegisters(_addr, _data->size(), _data);
         if (res < 0)
-            _conn->emitErrorOccured(_invokeId, errno, _type);
+            _conn->emitErrorOccured(_invokeId, errno, MBConnection::WriteRegisters);
         else
-            _conn->emitRequestFinished(_invokeId, res, _type);
+            _conn->emitRequestFinished(_invokeId, res, MBConnection::WriteRegisters);
     }
 
     int _slaveId;
     int _addr;
-    int _nb;
     QVector<quint16> *_data;
 };
 
@@ -296,9 +284,9 @@ public:
         _conn->setSlave(_slaveId);
         int res = _conn->reportSlaveId(_dest);
         if (res < 0)
-            _conn->emitErrorOccured(_invokeId, errno, _type);
+            _conn->emitErrorOccured(_invokeId, errno, MBConnection::ReportSlaveId);
         else
-            _conn->emitRequestFinished(_invokeId, res, _type);
+            _conn->emitRequestFinished(_invokeId, res, MBConnection::ReportSlaveId);
     }
 
     int _slaveId;
@@ -318,7 +306,7 @@ public:
         _conn->setSlave(_slaveId);
         int res = _conn->sendRawRequest(_req);
         if (res < 0)
-            _conn->emitErrorOccured(_invokeId, errno, _type);
+            _conn->emitErrorOccured(_invokeId, errno, MBConnection::RawRequest);
         else
             _conn->emitRawRequestSent(_invokeId, res);
     }
@@ -340,7 +328,7 @@ public:
         _conn->setSlave(_slaveId);
         int res = _conn->waitForConfirmation(_resp);
         if (res < 0)
-            _conn->emitErrorOccured(_invokeId, errno, _type);
+            _conn->emitErrorOccured(_invokeId, errno, MBConnection::RawConfirmation);
         else
             _conn->emitConfirmationReceived(_invokeId, res);
     }
@@ -463,22 +451,22 @@ void MBThreadedConnManager::closeAsync(MBConnection *conn, bool prioritize, int 
 }
 
 
-void MBThreadedConnManager::readBitsAsync(MBConnection *conn, int slaveId, int addr, int nb, QVector<quint8> *result, int invokeId)
+void MBThreadedConnManager::readBitsAsync(MBConnection *conn, int slaveId, int addr, QVector<quint8> *result, int invokeId)
 {
     MBDebug();
-    _appendCommand(new MBReadBitsCommand(conn, slaveId, addr, nb, result, invokeId));
+    _appendCommand(new MBReadBitsCommand(conn, slaveId, addr, result, invokeId));
 }
 
-void MBThreadedConnManager::readInputBitsAsync(MBConnection *conn, int slaveId, int addr, int nb, QVector<quint8> *result, int invokeId)
+void MBThreadedConnManager::readInputBitsAsync(MBConnection *conn, int slaveId, int addr, QVector<quint8> *result, int invokeId)
 {
     MBDebug();
-    _appendCommand(new MBReadInputBitsCommand(conn, slaveId, addr, nb, result, invokeId));
+    _appendCommand(new MBReadInputBitsCommand(conn, slaveId, addr, result, invokeId));
 }
 
-void MBThreadedConnManager::readRegistersAsync(MBConnection *conn, int slaveId, int addr, int nb, QVector<quint16> *result, int invokeId)
+void MBThreadedConnManager::readRegistersAsync(MBConnection *conn, int slaveId, int addr, QVector<quint16> *result, int invokeId)
 {
     MBDebug();
-    _appendCommand(new MBReadRegistersCommand(conn, slaveId, addr, nb, result, invokeId));
+    _appendCommand(new MBReadRegistersCommand(conn, slaveId, addr, result, invokeId));
 }
 
 void MBThreadedConnManager::_appendCommand(MBCommand *cmd)
@@ -514,16 +502,16 @@ void MBThreadedConnManager::writeRegisterAsync(MBConnection *conn, int slaveId, 
     _appendCommand(new MBWriteRegisterCommand(conn, slaveId, regAddr, value, invokeId));
 }
 
-void MBThreadedConnManager::writeBitsAsync(MBConnection *conn, int slaveId, int addr, int nb, QVector<quint8> *data, int invokeId)
+void MBThreadedConnManager::writeBitsAsync(MBConnection *conn, int slaveId, int addr, QVector<quint8> *data, int invokeId)
 {
     MBDebug();
-    _appendCommand(new MBWriteBitsCommand(conn, slaveId, addr, nb, data, invokeId));
+    _appendCommand(new MBWriteBitsCommand(conn, slaveId, addr, data, invokeId));
 }
 
-void MBThreadedConnManager::writeRegistersAsync(MBConnection *conn, int slaveId, int addr, int nb, QVector<quint16> *data, int invokeId)
+void MBThreadedConnManager::writeRegistersAsync(MBConnection *conn, int slaveId, int addr, QVector<quint16> *data, int invokeId)
 {
     MBDebug();
-    _appendCommand(new MBWriteRegistersCommand(conn, slaveId, addr, nb, data, invokeId));
+    _appendCommand(new MBWriteRegistersCommand(conn, slaveId, addr, data, invokeId));
 }
 
 void MBThreadedConnManager::reportSlaveIdAsync(MBConnection *conn, int slaveId, QVector<quint8> *dest, int invokeId)

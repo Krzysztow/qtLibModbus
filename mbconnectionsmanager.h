@@ -24,15 +24,15 @@ public:
     void mbConnectAsync(MBConnection *conn, int invokeId);
     void closeAsync(MBConnection *conn, bool prioritize, int invokeId);
 
-    void readBitsAsync(MBConnection *conn, int slaveId, int addr, int nb, QVector<quint8> *result, int invokeId);
-    void readInputBitsAsync(MBConnection *conn, int slaveId, int addr, int nb, QVector<quint8> *result, int invokeId);
-    void readRegistersAsync(MBConnection *conn, int slaveId, int addr, int nb, QVector<quint16> *result, int invokeId);
-    void readInputRegistersAsync(MBConnection *conn, int slaveId, int addr, int nb, QVector<quint16> *result, int invokeId);
+    void readBitsAsync(MBConnection *conn, int slaveId, int addr, QVector<quint8> *result, int invokeId);
+    void readInputBitsAsync(MBConnection *conn, int slaveId, int addr, QVector<quint8> *result, int invokeId);
+    void readRegistersAsync(MBConnection *conn, int slaveId, int addr, QVector<quint16> *result, int invokeId);
+    void readInputRegistersAsync(MBConnection *conn, int slaveId, int addr, QVector<quint16> *result, int invokeId);
 
     void writeBitAsync(MBConnection *conn, int slaveId, int coilAddr, int status, int invokeId);
     void writeRegisterAsync(MBConnection *conn, int slaveId, int regAddr, int value, int invokeId);
-    void writeBitsAsync(MBConnection *conn, int slaveId, int addr, int nb, QVector<quint8> *data, int invokeId);
-    void writeRegistersAsync(MBConnection *conn, int slaveId, int addr, int nb, QVector<quint16> *data, int invokeId);
+    void writeBitsAsync(MBConnection *conn, int slaveId, int addr, QVector<quint8> *data, int invokeId);
+    void writeRegistersAsync(MBConnection *conn, int slaveId, int addr, QVector<quint16> *data, int invokeId);
 
     void reportSlaveIdAsync(MBConnection *conn, int slaveId, QVector<quint8> *dest, int invokeId);
 

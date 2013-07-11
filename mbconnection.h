@@ -45,7 +45,12 @@ public:
         WriteRegister,
         WriteRegisters,
 
-        ReportSlaveId
+        ReportSlaveId,
+
+        RawRequest,
+        RawConfirmation,
+
+        InvalidRequest
     };
 
     /**
@@ -90,40 +95,40 @@ public:
             return -1;
     }
 
-    int readBitsAsync(int slaveId, int addr, int nb, QVector<quint8> *result) {
+    int readBitsAsync(int slaveId, int addr, QVector<quint8> *result) {
         if (0 != _threadMgr) {
             incrementReqId();
-            _threadMgr->readBitsAsync(this, slaveId, addr, nb, result, _lastRequestId);
+            _threadMgr->readBitsAsync(this, slaveId, addr, result, _lastRequestId);
             return _lastRequestId;
         }
         else
             return -1;
     }
 
-    int readInputBitsAsync(int slaveId, int addr, int nb, QVector<quint8> *result) {
+    int readInputBitsAsync(int slaveId, int addr, QVector<quint8> *result) {
         if (0 != _threadMgr) {
             incrementReqId();
-            _threadMgr->readInputBitsAsync(this, slaveId, addr, nb, result, _lastRequestId);
+            _threadMgr->readInputBitsAsync(this, slaveId, addr, result, _lastRequestId);
             return _lastRequestId;
         }
         else
             return -1;
     }
 
-    int readRegistersAsync(int slaveId, int addr, int nb, QVector<quint16> *result) {
+    int readRegistersAsync(int slaveId, int addr, QVector<quint16> *result) {
         if (0 != _threadMgr) {
             incrementReqId();
-            _threadMgr->readRegistersAsync(this, slaveId, addr, nb, result, _lastRequestId);
+            _threadMgr->readRegistersAsync(this, slaveId, addr, result, _lastRequestId);
             return _lastRequestId;
         }
         else
             return -1;
     }
 
-    int readInputRegistersAsync(int slaveId, int addr, int nb, QVector<quint16> *result) {
+    int readInputRegistersAsync(int slaveId, int addr, QVector<quint16> *result) {
         if (0 != _threadMgr) {
             incrementReqId();
-            _threadMgr->readInputRegistersAsync(this, slaveId, addr, nb, result, _lastRequestId);
+            _threadMgr->readInputRegistersAsync(this, slaveId, addr, result, _lastRequestId);
             return _lastRequestId;
         }
         else
@@ -140,10 +145,10 @@ public:
             return -1;
     }
 
-    int writeBitsAsync(int slaveId, int addr, int nb, QVector<quint8> *data) {
+    int writeBitsAsync(int slaveId, int addr, QVector<quint8> *data) {
         if (0 != _threadMgr) {
             incrementReqId();
-            _threadMgr->writeBitsAsync(this, slaveId, addr, nb, data, _lastRequestId);
+            _threadMgr->writeBitsAsync(this, slaveId, addr, data, _lastRequestId);
             return _lastRequestId;
         }
         else
@@ -160,10 +165,10 @@ public:
             return -1;
     }
 
-    int writeRegistersAsync(int slaveId, int addr, int nb, QVector<quint16> *data) {
+    int writeRegistersAsync(int slaveId, int addr, QVector<quint16> *data) {
         if (0 != _threadMgr) {
             incrementReqId();
-            _threadMgr->writeRegistersAsync(this, slaveId, addr, nb, data, _lastRequestId);
+            _threadMgr->writeRegistersAsync(this, slaveId, addr, data, _lastRequestId);
             return _lastRequestId;
         }
         else
