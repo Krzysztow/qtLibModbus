@@ -56,8 +56,10 @@ public:
     virtual void exec() {
         MBDebug();
         int ret = _conn->mbConnect();
-        if (ret < 0)
+        if (ret < 0) {
             _conn->emitErrorOccured(_invokeId, errno, MBConnection::Connect);
+            _conn->emitConnectionChanged(_invokeId, false);
+        }
         else
             _conn->emitConnectionChanged(_invokeId, 0 == ret);
     }

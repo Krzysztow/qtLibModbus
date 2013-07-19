@@ -10,6 +10,10 @@
 
 #include "mbconnectionsmanager.h"
 
+/**
+ * @brief The MBConnection class - wrapper around libmodbus library that enables its normal as well as asynchronous use.
+ */
+
 class QTLIBMOBUSSHARED_EXPORT MBConnection:
         public QObject
 {
@@ -56,7 +60,7 @@ public:
     /**
      * Following are creation methods for two connection types TCP and Rtu.
      * If you want to run connections in a separate thread, to use nonblocking behaviour, pass not NULL threadedConnManager pointer
-     * and then use set of *Async(...) methods.
+     * and then use a set of *Async(...) methods.
      */
     static MBConnection *newTcpConnection(const QHostAddress &servIp, quint16 port, MBThreadedConnManager *threadedConnManager = 0);
     static MBConnection *newRtuConnection(const QString &device, int baudRate, Parity parity, int dataBitsNo, int stopBitsNo, MBThreadedConnManager *threadedConnManager = 0);
@@ -75,6 +79,13 @@ public:
      */
 
 public:
+    /**
+     * @brief connectAsync - tries to connect to the host asynchronously.
+     * In any case, result information is broadcasted with connectionChanged() signal;
+     * If error occures additional errorOccured() signal is emitted.
+     * @return
+     */
+
     int connectAsync() {
         if (0 != _threadMgr) {
             incrementReqId();
@@ -85,6 +96,13 @@ public:
             return -1;
     }
 
+    /**
+     * @brief closeAsync - asynchronously closes the connection.
+     * @param prioritize - if set to true, doesn't wait for all the scheduled tasks to be executed - removes all the queued tasks that use this connection and disconnect will be issued just
+     * after current task is finished (since we can't stop current task).
+     * if set to false, first all the queued tasks will be executed and then connection closed.
+     * @return
+     */
     int closeAsync(bool prioritize = false) {
         if (0 != _threadMgr) {
             incrementReqId();
@@ -136,7 +154,8 @@ public:
     }
 
     int writeBitAsync(int slaveId, int coilAddr, int status) {
-        ++_lastRequestId;        if (0 != _threadMgr) {
+        ++_lastRequestId;
+        if (0 != _threadMgr) {
             incrementReqId();
             _threadMgr->writeBitAsync(this, slaveId, coilAddr, status, _lastRequestId);
             return _lastRequestId;
