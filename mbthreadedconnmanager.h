@@ -1,5 +1,5 @@
-#ifndef MBCONNECTIONSMANAGER_H
-#define MBCONNECTIONSMANAGER_H
+#ifndef MBTHREADEDCONNMANAGER_H
+#define MBTHREADEDCONNMANAGER_H
 
 #include <QObject>
 #include <QThread>
@@ -65,4 +65,4 @@ private:
     int _managedConnectionsCnt;
 };
 
-#endif // MBCONNECTIONSMANAGER_H
+#endif // MBTHREADEDCONNMANAGER_H

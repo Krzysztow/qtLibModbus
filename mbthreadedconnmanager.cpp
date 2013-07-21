@@ -1,4 +1,4 @@
-#include "mbconnectionsmanager.h"
+#include "mbthreadedconnmanager.h"
 
 #include "mbconnection.h"
 

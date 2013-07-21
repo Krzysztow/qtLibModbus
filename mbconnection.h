@@ -8,7 +8,7 @@
 #include "errno.h"
 #include "libmodbus/modbus.h"
 
-#include "mbconnectionsmanager.h"
+#include "mbthreadedconnmanager.h"
 
 /**
  * @brief The MBConnection class - wrapper around libmodbus library that enables its normal as well as asynchronous use.
