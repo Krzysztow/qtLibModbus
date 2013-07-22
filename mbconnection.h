@@ -1,12 +1,10 @@
 #ifndef MBCONNECTION_H
 #define MBCONNECTION_H
 
-#include "qtlibmodbus_global.h"
-
 #include <QHostAddress>
 
 #include "errno.h"
-#include "libmodbus/modbus.h"
+#include "modbus.h"
 
 #include "mbthreadedconnmanager.h"
 
@@ -14,7 +12,7 @@
  * @brief The MBConnection class - wrapper around libmodbus library that enables its normal as well as asynchronous use.
  */
 
-class QTLIBMOBUSSHARED_EXPORT MBConnection:
+class MBConnection:
         public QObject
 {
     Q_OBJECT
