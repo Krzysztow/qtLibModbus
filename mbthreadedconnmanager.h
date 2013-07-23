@@ -4,7 +4,7 @@
 #include <QObject>
 #include <QThread>
 #include <QMutex>
-#include <QWaitCondition>
+//#include <QWaitCondition>
 
 class MBConnection;
 class MBCommand;
@@ -57,7 +57,7 @@ private:
 
     QThread _managedThread;
     QMutex _mutex;
-    QWaitCondition _hasSomeWorkToDo;
+    //QWaitCondition _hasSomeWorkToDo;
 
     QList<MBCommand*> _commands;//protected by _mutex
     MBCommand *_currentCommand;//protected by _mutex
