@@ -30,9 +30,9 @@ MBConnection *MBConnection::newRtuConnection(const QString &device, int baudRate
 
 MBConnection::MBConnection(modbus_t *ctxt, MBThreadedConnManager *threadMgr):
     _lastRequestId(0),
-    _ctxt(ctxt)
+    _ctxt(ctxt),
+    _threadMgr(threadMgr)
 {
-    _threadMgr = threadMgr;
     if (0 != _threadMgr) {
         _threadMgr->registerConnection(this);
     }

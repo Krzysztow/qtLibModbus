@@ -352,6 +352,16 @@ MBThreadedConnManager::MBThreadedConnManager(QObject *parent) :
     connect(&_managedThread, SIGNAL(finished()), this, SLOT(_threadFinished()));
 }
 
+MBThreadedConnManager::~MBThreadedConnManager()
+{
+    if (!_managedThread.isFinished()) {
+        _managedThread.quit();
+        if (!_managedThread.wait(10 * 1000)) {//give it time to finish, hopefully it succeeds...
+            _managedThread.terminate();//... or kill it, which is dangerous
+        }
+    }
+}
+
 const QThread *MBThreadedConnManager::managedThread()
 {
     return &_managedThread;
